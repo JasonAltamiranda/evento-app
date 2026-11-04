@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connecting Friends - Iniciar Sesión</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --bg-dark: #121212;
+            --bg-card: #1E1E1E;
+            --text-light: #B0B0B0;
+            --text-white: #FFFFFF;
+            --accent-blue: #7047EB;
+            --border-color: #333333;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-white);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        
+        .app-container {
+            width: 100%;
+            max-width: 400px;
+            height: 800px;
+            background-color: var(--bg-dark);
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.8);
+            border-radius: 40px;
+            overflow: hidden;
+            border: 8px solid var(--border-color);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .login-screen {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            overflow-y: auto;
+            padding: 20px;
+            position: relative;
+        }
+        
+        .decorative-blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(60px);
+            opacity: 0.15;
+            pointer-events: none;
+        }
+        
+        .blob-1 {
+            width: 200px;
+            height: 200px;
+            background: #F59E42;
+            top: -50px;
+            right: -50px;
+        }
+        
+        .blob-2 {
+            width: 250px;
+            height: 250px;
+            background: var(--accent-blue);
+            bottom: 100px;
+            left: -80px;
+        }
+        
+        .logo-container {
+            padding: 30px 0 20px 0;
+            text-align: center;
+        }
+        
+        .logo-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #F59E42, var(--accent-blue));
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            box-shadow: 0 10px 30px rgba(112, 71, 235, 0.3);
+        }
+        
+        .input-field {
+            background-color: var(--bg-card);
+            border: 2px solid var(--border-color);
+            color: var(--text-white);
+            transition: all 0.3s ease;
+            width: 100%;
+            padding: 14px 16px;
+            border-radius: 12px;
+        }
+        
+        .input-field:focus {
+            border-color: var(--accent-blue);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(112, 71, 235, 0.1);
+        }
+        
+        .input-field::placeholder {
+            color: var(--text-light);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-blue), #F59E42);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(112, 71, 235, 0.4);
+            border: none;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .btn-primary:active {
+            transform: scale(0.98);
+        }
+        
+        .divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            color: var(--text-light);
+            margin: 20px 0;
+        }
+        
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .divider span {
+            padding: 0 15px;
+            font-size: 14px;
+        }
+        
+        .social-btn {
+            background-color: var(--bg-card);
+            border: 2px solid var(--border-color);
+            color: var(--text-white);
+            transition: all 0.3s ease;
+            padding: 14px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        .social-btn:hover {
+            border-color: var(--accent-blue);
+            background-color: rgba(112, 71, 235, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .checkbox-custom {
+            accent-color: var(--accent-blue);
+        }
+        
+        .error-message, .success-message {
+            border-left: 4px solid;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+        
+        .error-message {
+            background-color: rgba(239, 68, 68, 0.1);
+            border-color: #EF4444;
+            color: #FCA5A5;
+        }
+        
+        .success-message {
+            background-color: rgba(16, 185, 129, 0.1);
+            border-color: #10B981;
+            color: #6EE7B7;
+        }
+        
+        .floating-animation {
+            animation: floating 3s ease-in-out infinite;
+        }
+        
+        @keyframes floating {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(5px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+        
+        .modal-overlay.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: var(--bg-card);
+            border: 2px solid var(--border-color);
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 400px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+        
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="app-container">
+        <div class="login-screen">
+            <div class="decorative-blob blob-1"></div>
+            <div class="decorative-blob blob-2"></div>
+        
+        <div class="logo-container">
+            <div class="logo-icon floating-animation">
+                <i class="fas fa-users text-3xl text-white"></i>
+            </div>
+            <h1 class="text-2xl font-bold mb-2">Connecting Friends</h1>
+            <p class="text-sm" style="color: var(--text-light);">Conectando momentos, simplificando encuentros</p>
+        </div>
+        
+        <div class="mt-8 mb-6">
+            <h2 class="text-xl font-bold mb-2">¡Bienvenido de nuevo! 👋</h2>
+            <p style="color: var(--text-light);">Inicia sesión para continuar</p>
+        </div>
+        
+        <form id="login-form" class="space-y-4">
+            <div>
+                <label for="email" class="block text-sm font-semibold mb-2">
+                    Correo Electrónico
+                </label>
+                <div class="relative">
+                    <span class="absolute left-4 top-1/2 -translate-y-1/2" style="color: var(--text-light);">
+                        <i class="fas fa-envelope"></i>
+                    </span>
+                    <input 
+                        type="email" 
+                        id="email" 
+                        name="email"
+                        class="input-field pl-12 pr-4" 
+                        placeholder="tu@email.com"
+                        required
+                    >
+                </div>
+            </div>
+            
+            <div>
+                <label for="password" class="block text-sm font-semibold mb-2">
+                    Contraseña
+                </label>
+                <div class="relative">
+                    <span class="absolute left-4 top-1/2 -translate-y-1/2" style="color: var(--text-light);">
+                        <i class="fas fa-lock"></i>
+                    </span>
+                    <input 
+                        type="password" 
+                        id="password" 
+                        name="password"
+                        class="input-field pl-12 pr-14" 
+                        placeholder="••••••••"
+                        required
+                    >
+                    <button 
+                        type="button" 
+                        onclick="togglePassword()"
+                        class="absolute right-4 top-1/2 -translate-y-1/2"
+                        style="color: var(--text-light);"
+                    >
+                        <i class="fas fa-eye" id="toggle-icon"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="flex items-center justify-between text-sm">
+                <label class="flex items-center cursor-pointer">
+                    <input type="checkbox" class="checkbox-custom mr-2 w-4 h-4" checked>
+                    <span style="color: var(--text-light);">Recordarme</span>
+                </label>
+                <a href="#" onclick="showForgotPasswordModal(event)" class="font-semibold" style="color: var(--accent-blue);">
+                    ¿Olvidaste tu contraseña?
+                </a>
+            </div>
+            
+            <button 
+                type="submit" 
+                class="btn-primary w-full py-4 rounded-xl font-bold text-lg mt-6"
+            >
+                Iniciar Sesión
+            </button>
+            
+            <div class="divider">
+                <span>o continúa con</span>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-3">
+                <button type="button" onclick="loginWithGoogle()" class="social-btn flex items-center justify-center gap-2">
+                    <i class="fab fa-google text-red-500 text-lg"></i>
+                    Google
+                </button>
+                <button type="button" onclick="loginWithFacebook()" class="social-btn flex items-center justify-center gap-2">
+                    <i class="fab fa-facebook text-blue-500 text-lg"></i>
+                    Facebook
+                </button>
+            </div>
+            
+            <p class="text-center mt-6 text-sm" style="color: var(--text-light);">
+                ¿No tienes una cuenta? 
+                <a href="registro.html" class="font-bold" style="color: var(--accent-blue);">
+                    Regístrate aquí
+                </a>
+            </p>
+        </form>
+        
+        <div id="error-message" class="hidden error-message">
+            <div class="flex items-start gap-3">
+                <i class="fas fa-exclamation-circle text-lg mt-0.5"></i>
+                <p class="text-sm flex-1" id="error-text"></p>
+            </div>
+        </div>
+        
+        <div id="success-message" class="hidden success-message">
+            <div class="flex items-start gap-3">
+                <i class="fas fa-check-circle text-lg mt-0.5"></i>
+                <p class="text-sm flex-1" id="success-text"></p>
+            </div>
+        </div>
+        
+                    <div class="h-8"></div>
+        </div>
+    </div>
+    
+    <!-- Modal Recuperar Contraseña -->
+    <div id="forgot-password-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-xl font-bold">Recuperar Contraseña</h3>
+                <button onclick="closeForgotPasswordModal()" style="color: var(--text-light);">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            
+            <p class="text-sm mb-4" style="color: var(--text-light);">
+                Ingresa tu correo electrónico y te enviaremos instrucciones para restablecer tu contraseña.
+            </p>
+            
+            <form id="forgot-password-form" onsubmit="sendPasswordReset(event)">
+                <div class="mb-4">
+                    <label for="reset-email" class="block text-sm font-semibold mb-2">
+                        Correo Electrónico
+                    </label>
+                    <input 
+                        type="email" 
+                        id="reset-email" 
+                        class="input-field" 
+                        placeholder="tu@email.com"
+                        required
+                    >
+                </div>
+                
+                <button type="submit" class="btn-primary w-full py-3 rounded-xl font-bold">
+                    Enviar Instrucciones
+                </button>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        // Toggle password visibility
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const toggleIcon = document.getElementById('toggle-icon');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.classList.remove('fa-eye');
+                toggleIcon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.classList.remove('fa-eye-slash');
+                toggleIcon.classList.add('fa-eye');
+            }
+        }
+        
+        // Mostrar modal de recuperación
+        function showForgotPasswordModal(event) {
+            event.preventDefault();
+            document.getElementById('forgot-password-modal').classList.add('active');
+        }
+        
+        // Cerrar modal de recuperación
+        function closeForgotPasswordModal() {
+            document.getElementById('forgot-password-modal').classList.remove('active');
+            document.getElementById('forgot-password-form').reset();
+        }
+        
+        // Enviar recuperación de contraseña
+        async function sendPasswordReset(event) {
+            event.preventDefault();
+            const email = document.getElementById('reset-email').value;
+            
+            // Simulación de envío (aquí deberías conectar con tu backend)
+            showMessage('success', `✉️ Se han enviado las instrucciones a ${email}`);
+            
+            setTimeout(() => {
+                closeForgotPasswordModal();
+            }, 2000);
+            
+            // TODO: Implementar con tu backend
+            // const response = await fetch('recuperar_password.php', {
+            //     method: 'POST',
+            //     body: new URLSearchParams({ email })
+            // });
+        }
+        
+        // Login con Google
+        function loginWithGoogle() {
+            showMessage('error', '⚠️ Autenticación con Google en desarrollo. Por favor, usa email y contraseña.');
+            
+            // TODO: Implementar OAuth de Google
+            // Necesitarás configurar Google Cloud Console y obtener Client ID
+            // Documentación: https://developers.google.com/identity/gsi/web/guides/overview
+        }
+        
+        // Login con Facebook
+        function loginWithFacebook() {
+            showMessage('error', '⚠️ Autenticación con Facebook en desarrollo. Por favor, usa email y contraseña.');
+            
+            // TODO: Implementar Facebook Login
+            // Necesitarás crear una app en Facebook Developers
+            // Documentación: https://developers.facebook.com/docs/facebook-login/web
+        }
+        
+        // Mostrar mensajes
+        function showMessage(type, text) {
+            const errorEl = document.getElementById('error-message');
+            const successEl = document.getElementById('success-message');
+            
+            if (type === 'error') {
+                document.getElementById('error-text').textContent = text;
+                errorEl.classList.remove('hidden');
+                successEl.classList.add('hidden');
+                
+                setTimeout(() => {
+                    errorEl.classList.add('hidden');
+                }, 5000);
+            } else {
+                document.getElementById('success-text').textContent = text;
+                successEl.classList.remove('hidden');
+                errorEl.classList.add('hidden');
+                
+                setTimeout(() => {
+                    successEl.classList.add('hidden');
+                }, 5000);
+            }
+        }
+        
+        // Handle login form submission
+        document.getElementById('login-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            try {
+                const response = await fetch('login.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: new URLSearchParams({
+                        email: email,
+                        password: password
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showMessage('success', '✅ Inicio de sesión exitoso. Redirigiendo...');
+                    setTimeout(() => {
+                        window.location.href = 'index.php';
+                    }, 1000);
+                } else {
+                    showMessage('error', result.message);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showMessage('error', 'Error de conexión. Intenta nuevamente.');
+            }
+        });
+    </script>
+</body>
+</html>
